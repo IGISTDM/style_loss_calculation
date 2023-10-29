@@ -3,7 +3,9 @@ from PIL import Image
 from torchvision.transforms import functional as TF
 import os
 import matplotlib.pyplot as plt
+import json
 from path import path_join
+from constants import output_folder
 
 def get_image_style(image_name:str):
     parts = image_name.split("-")
@@ -17,14 +19,10 @@ results_folder = os.listdir(results)
 
 content_prefix = "scene-"
 
-output_folder = 'analysis'
 os.makedirs(output_folder, exist_ok=True)
 
 for style in style_folder:
     print(style)
-    plt_clip, plt_vgg = plt.figure(), plt.figure()
-    plt_clip_ax, plt_vgg_ax = plt_clip.add_subplot(111), plt_vgg.add_subplot(111)
-
 
     for method in results_folder:
         clip = []
@@ -41,21 +39,11 @@ for style in style_folder:
             clip.append(float(cal.clip_global_loss_image(ori_ts,target_ts)))
             vgg.append(float(cal.vgg_loss_feature_gram(ori_ts,target_ts)))
             ori.close()
-            target.close()
+            target.close()        
         
-        plt_clip_ax.plot(clip, label = method)
-        plt_vgg_ax.plot(vgg, label = method)
-
-        plt_clip_ax.set_title(f"{style} clip")
-        plt_clip_ax.set_xlabel("number of images")
-        plt_clip_ax.set_ylabel("loss")
-
-        plt_vgg_ax.set_title(f"{style} vgg")
-        plt_vgg_ax.set_xlabel("number of images")
-        plt_vgg_ax.set_ylabel("loss")
         print(clip)
 
-    plt_clip.savefig(f"{output_folder}/{style}_clip.png")
-    plt.close(plt_clip)
-    plt_vgg.savefig(f"{output_folder}/{style}_vgg.png")
-    plt.close(plt_vgg)
+    json_file_path = f"{output_folder}/{method}"
+    os.makedirs(json_file_path, exist_ok=True)
+    with open(f"{json_file_path}/{style}-content.json", 'w') as json_file:
+        json.dump(clip, json_file)
