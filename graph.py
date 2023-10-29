@@ -1,8 +1,9 @@
 import json
 import matplotlib.pyplot as plt
 import numpy as np
+import os
 from path import path_join
-from constants import output_folder
+from constants import output_folder, graph_output_folder
 
 method_list = ["RAASN"]
 
@@ -11,6 +12,8 @@ style_list = ["Abstract_Expressionism","Baroque"]
 
 #types = ["content", "style"]
 loss_list = ["content"]
+
+os.makedirs(graph_output_folder, exist_ok=True)
 
 for method in method_list:
     for loss_type in loss_list:
@@ -37,4 +40,4 @@ for method in method_list:
         ax.set_title(f"{method}")
         ax.yaxis.grid(True)
 
-        plt.savefig(f"{method}-{loss_type}.png")
+        plt.savefig(f"{graph_output_folder}/{method}-{loss_type}.png")
