@@ -20,4 +20,5 @@ pip install git+https://github.com/openai/CLIP.git
 ```bash
 python main.py
 python graph.py
+
 ```
