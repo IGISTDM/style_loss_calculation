@@ -37,7 +37,8 @@ class LossCal:
         clip_loss = d_clip_loss(x_image_embeds, text).mean()
         return clip_loss
     
-    def clip_global_loss_image(self, image, style_image):  # calculate the loss between image and image
+    # calculate clip loss between 2 images
+    def clip_global_loss_image(self, image, style_image) -> float:
         clip_loss = torch.tensor(0).to(self.device)
         augmented_in = self.image_augmentations(image, 1).add(1).div(2)
         clip_in = self.clip_normalize(augmented_in)
@@ -47,9 +48,11 @@ class LossCal:
         clip_style = self.clip_normalize(augmented_style)
         y_image_embeds = self.clip_model.encode_image(clip_style).float()
 
-        clip_loss = d_clip_loss(x_image_embeds, y_image_embeds).mean()
+        clip_loss = float(d_clip_loss(x_image_embeds, y_image_embeds).mean())
         return clip_loss
-    def vgg_loss_feature_gram(self, x_in, y_in): # calculate the loss between image and image
+    
+    # calculate vgg loss between 2 images
+    def vgg_loss_feature_gram(self, x_in, y_in) -> float: 
         content_features = get_features(self.vgg_normalize(x_in), self.vgg)
         target_features = get_features(self.vgg_normalize(y_in), self.vgg)
         loss = 0.0
@@ -67,8 +70,7 @@ class LossCal:
             target_gram = self.gram_matrix(target_features[layers[key]])
             content_gram = self.gram_matrix(content_features[layers[key]])
             loss += torch.mean((target_gram - content_gram) ** 2)
-        # print(loss.item())
-        return loss
+        return float(loss)
     
     def gram_matrix(self, features): 
         batch_size, num_channels, height, width = features.size()

@@ -29,13 +29,15 @@ for method in method_list:
             print(standard_deviation)
             mean_list.append(mean)
             standard_deviation_list.append(standard_deviation)
-        x_pos = np.arange(len(style_list))
+
+        # x coordinates of the bars
+        bar_positions = np.arange(len(style_list))
 
         # Build the plot
         fig, ax = plt.subplots()
-        ax.bar(x_pos, mean_list, yerr=standard_deviation_list, align='center', alpha=0.5, ecolor='black', capsize=10)
+        ax.bar(bar_positions, mean_list, yerr=standard_deviation_list, align='center', alpha=0.5, ecolor='black', capsize=10)
         ax.set_ylabel(f"{loss_type}")
-        ax.set_xticks(x_pos)
+        ax.set_xticks(bar_positions)
         ax.set_xticklabels(style_list)
         ax.set_title(f"{method}")
         ax.yaxis.grid(True)
