@@ -1,5 +1,7 @@
 # loss_cal
 
+This repo calculates vgg loss and clip score loss of sets of images. Loss function written by [cseslowpoke](https://github.com/cseslowpoke)
+
 ## env
 
 ```bash
