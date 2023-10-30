@@ -4,7 +4,7 @@ from torchvision.transforms import functional as TF
 import os
 import json
 from path import path_join
-from constants import output_folder
+from constants import output_folder, style_list
 
 def get_image_style(image_name: str):
     parts = image_name.split("-")
@@ -18,18 +18,29 @@ results_folder = os.listdir(results)
 
 content_prefix = "scene-"
 
+content_amount = 50
+style_amount = 100
+stylized_image_amount = content_amount * style_amount
+stylized_image_amount = 5
+
 os.makedirs(output_folder, exist_ok=True)
 
-for style in style_folder:
-    print(style)
+# calculate the longest style name length
+max_style_string_length = 0
+for style_string in style_list:
+    style_string_length = len(style_string)
+    if style_string_length > max_style_string_length:
+        max_style_string_length = style_string_length
 
+for style in style_folder:
     for method in results_folder:
+        print(f"{method}:")
         clip_loss_list = []
         vgg_loss_list = []
         method_subsets = os.listdir(
             path_join(results, method, content_prefix+style))
+        index = 0
         for image_name in method_subsets:
-            print(image_name)
             cal = LossCal()
 
             # style image
@@ -52,6 +63,13 @@ for style in style_folder:
             # close images
             style_image.close()
             result_image.close()
+
+            # print process status
+            index = index + 1
+            formatted_style = '{:<{}s}'.format(style, max_style_string_length)
+            percentage = index / stylized_image_amount * 100
+            image_status = f"({index}/{stylized_image_amount})"
+            print(f"\t{formatted_style}: {percentage}% {image_status}", end="\r")
 
     # save loss data to json file
     json_file_path = f"{output_folder}/{method}"

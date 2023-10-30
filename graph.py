@@ -3,12 +3,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 from path import path_join
-from constants import output_folder, graph_output_folder
+from constants import output_folder, graph_output_folder, style_list
 
 method_list = ["RAASN"]
-
-#styles = ["Abstract_Expressionism","Baroque","Cubism","Fauvism","Pointillism","Ukiyo_e"]
-style_list = ["Abstract_Expressionism","Baroque"]
 
 #types = ["content", "style"]
 loss_list = ["content"]
@@ -26,7 +23,6 @@ for method in method_list:
 
             mean = np.mean(data)
             standard_deviation = np.std(data)
-            print(standard_deviation)
             mean_list.append(mean)
             standard_deviation_list.append(standard_deviation)
 
@@ -42,4 +38,7 @@ for method in method_list:
         ax.set_title(f"{method}")
         ax.yaxis.grid(True)
 
-        plt.savefig(f"{graph_output_folder}/{method}-{loss_type}.png")
+        # save image
+        graph_name = f"{method}-{loss_type}.png"
+        plt.savefig(f"{graph_output_folder}/{graph_name}")
+        print(f"generated: {graph_name}")
