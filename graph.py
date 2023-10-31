@@ -39,6 +39,6 @@ for method in method_list:
         ax.yaxis.grid(True)
 
         # save image
-        graph_name = f"{method}-{loss_type}.png"
-        plt.savefig(f"{graph_output_folder}/{graph_name}")
+        graph_name = f"{method}-{loss_type}.svg"
+        plt.savefig(f"{graph_output_folder}/{graph_name}", format="svg")
         print(f"generated: {graph_name}")
