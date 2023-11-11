@@ -6,9 +6,11 @@ import json
 from path import path_join
 from constants import output_folder, style_list
 
+
 def get_image_style(image_name: str):
     parts = image_name.split("-")
     return parts[-1]
+
 
 style_folder_name = "styles"
 style_folder = os.listdir(style_folder_name)
@@ -21,7 +23,7 @@ content_prefix = "scene-"
 content_amount = 50
 style_amount = 100
 stylized_image_amount = content_amount * style_amount
-stylized_image_amount = 5
+stylized_image_amount = 2000
 
 os.makedirs(output_folder, exist_ok=True)
 
@@ -36,7 +38,7 @@ for style in style_folder:
     for method in results_folder:
         print(f"{method}:")
         clip_loss_list = []
-        vgg_loss_list = []
+        gram_matrix_loss_list = []
         method_subsets = os.listdir(
             path_join(results, method, content_prefix+style))
         index = 0
@@ -46,10 +48,10 @@ for style in style_folder:
             # style image
             style_image_name = get_image_style(image_name)
             style_image = Image.open(path_join(style_folder_name, style,
-                             style_image_name)).convert("RGB")
+                                               style_image_name)).convert("RGB")
             style_image_tensor = (TF.to_tensor(style_image)).unsqueeze(
                 0).mul(2).sub(1).to(cal.device)
-            
+
             # result image
             result_image = Image.open(
                 path_join(results, method, content_prefix+style, image_name)).convert("RGB")
@@ -57,8 +59,10 @@ for style in style_folder:
                 0).mul(2).sub(1).to(cal.device)
 
             # append loss to list
-            clip_loss_list.append(cal.clip_global_loss_image(style_image_tensor, result_image_tensor))
-            vgg_loss_list.append(cal.vgg_loss_feature_gram(style_image_tensor, result_image_tensor))
+            clip_loss_list.append(cal.clip_global_loss_image(
+                style_image_tensor, result_image_tensor))
+            gram_matrix_loss_list.append(cal.vgg_loss_feature_gram(
+                style_image_tensor, result_image_tensor))
 
             # close images
             style_image.close()
@@ -67,12 +71,18 @@ for style in style_folder:
             # print process status
             index = index + 1
             formatted_style = '{:<{}s}'.format(style, max_style_string_length)
-            percentage = index / stylized_image_amount * 100
+            percentage = round(index / stylized_image_amount, 4) * 100
             image_status = f"({index}/{stylized_image_amount})"
             print(f"\t{formatted_style}: {percentage}% {image_status}", end="\r")
 
-    # save loss data to json file
-    json_file_path = f"{output_folder}/{method}"
-    os.makedirs(json_file_path, exist_ok=True)
-    with open(f"{json_file_path}/{style}-content.json", 'w') as json_file:
-        json.dump(clip_loss_list, json_file)
+        # save clip loss to json file
+        json_file_path = f"{output_folder}/{method}"
+        os.makedirs(json_file_path, exist_ok=True)
+        with open(f"{json_file_path}/{style}-clip.json", 'w') as json_file:
+            json.dump(clip_loss_list, json_file)
+
+        # save gram matrix loss to json file
+        json_file_path = f"{output_folder}/{method}"
+        os.makedirs(json_file_path, exist_ok=True)
+        with open(f"{json_file_path}/{style}-gram_matrix.json", 'w') as json_file:
+            json.dump(gram_matrix_loss_list, json_file)
