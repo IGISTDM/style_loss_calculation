@@ -5,8 +5,11 @@ import clip
 from augmentation import ImageAugmentations
 
 class LossCal:
-    def __init__(self) -> None:
-        self.device = "cuda" if torch.cuda.is_available() else "cpu"
+    def __init__(self, device = "cpu") -> None:
+        if device=="cuda" and torch.cuda.is_available():
+            self.device = "cuda"
+        else:
+            self.device = "cpu"
         self.image_augmentations = ImageAugmentations(
             224, 0.5, 0.5, 1.0, patch=False)
         self.patch_augmentations = ImageAugmentations(
