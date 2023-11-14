@@ -4,7 +4,7 @@ from torchvision.transforms import functional as TF
 import os
 import json
 from path import path_join
-from constants import output_folder, style_list
+from constants import json_output_folder, style_list
 
 
 def get_image_style(image_name: str):
@@ -25,7 +25,7 @@ style_amount = 100
 stylized_image_amount = content_amount * style_amount
 stylized_image_amount = 2000
 
-os.makedirs(output_folder, exist_ok=True)
+os.makedirs(json_output_folder, exist_ok=True)
 
 # calculate the longest style name length
 max_style_string_length = 0
@@ -76,13 +76,13 @@ for style in style_folder:
             print(f"\t{formatted_style}: {percentage}% {image_status}", end="\r")
 
         # save clip loss to json file
-        json_file_path = f"{output_folder}/{method}"
+        json_file_path = f"{json_output_folder}/{method}"
         os.makedirs(json_file_path, exist_ok=True)
         with open(f"{json_file_path}/{style}-clip.json", 'w') as json_file:
             json.dump(clip_loss_list, json_file)
 
         # save gram matrix loss to json file
-        json_file_path = f"{output_folder}/{method}"
+        json_file_path = f"{json_output_folder}/{method}"
         os.makedirs(json_file_path, exist_ok=True)
         with open(f"{json_file_path}/{style}-gram_matrix.json", 'w') as json_file:
             json.dump(gram_matrix_loss_list, json_file)
