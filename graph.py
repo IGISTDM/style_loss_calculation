@@ -5,9 +5,9 @@ import os
 from path import path_join
 from constants import json_output_folder, graph_output_folder, style_list, loss_list
 
-method_list = ["AdaIN", "RAASN"]
+method_list = ["AdaIN", "RAASN", "IGISTDM"]
 
-bar_width = 0.2
+bar_width = 0.5
 
 os.makedirs(graph_output_folder, exist_ok=True)
 
