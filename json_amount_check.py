@@ -1,18 +1,18 @@
 import json
-from constants import loss_list, json_output_folder
+from constants import loss_list, style_list, json_output_folder
 from path import path_join
 
-method_list = ["AdaIN"]
-style_list = ["Fauvism", "Pointillism"]
+method_list = ["AdaIN", "IGISTDM", "RAASN"]
 content_amount = 20
 style_amount = 100
 required_amount = content_amount * style_amount
 
 for method in method_list:
+    print(f"{method}:")
     for style in style_list:
         for loss in loss_list:
             file_name = f"{style}-{loss}.json"
-            print(f"{file_name}")
+            print(f"    {file_name}")
             json_file = path_join(json_output_folder, method, file_name)
             with open(json_file, 'r') as json_file:
                 data = json.load(json_file)
@@ -23,4 +23,4 @@ for method in method_list:
                 raise Exception(
                     f"Data amount in {style}-{loss}.json is below {required_amount}")
 
-print("JSON verified")
+print("JSON amount is correct!")
