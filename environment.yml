@@ -1,4 +1,4 @@
-name: zecon
+name: style_loss
 channels:
   - pytorch
   - defaults
